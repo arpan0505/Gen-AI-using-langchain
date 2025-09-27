@@ -28,13 +28,15 @@ prompt1 = PromptTemplate(
 classify_chain = prompt1 | model | parser2
 
 prompt2 = PromptTemplate(
-    template="Generate a detailed positive response to the following feedback:\n\n{feedback}", 
+    template="The following customer feedback is positive. Write a warm, appreciative, and professional response thanking the customer:\n\n{feedback}", 
     input_variables=["feedback"]
 )
+
 prompt3 = PromptTemplate(
-    template="Generate a detailed negative response to the following feedback:\n\n{feedback}", 
+    template="The following customer feedback is negative. Write a polite and professional company response that acknowledges the complaint, apologizes for the issue, and offers assistance:\n\n{feedback}", 
     input_variables=["feedback"]
 )
+
 
 branch_chain = RunnableBranch(
     (lambda x: x.category == "positive", prompt2 | model | parser),
@@ -44,5 +46,4 @@ branch_chain = RunnableBranch(
 
 final_chain = classify_chain | branch_chain
 
-result = final_chain.invoke({'feedback': "The product quality is outstanding and exceeded my expectations!"})
-print(result)
+print(final_chain.invoke({'feedback': "I absolutely love this product! The design is sleek, the performance is excellent, and it has made my daily tasks so much easier. Definitely worth every penny."}))
